@@ -1,0 +1,13 @@
+.loader {
+  width: 64px;
+  height: 64px;
+  border: 6px dashed black;
+  border-radius: 50%;
+  animation: 1.6s linear infinite animator;
+}
+
+@keyframes animator {
+  to {
+    transform: rotate(360deg);
+  }
+}
