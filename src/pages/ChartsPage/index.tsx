@@ -2,12 +2,12 @@ import React from "react";
 
 import { Loader } from "@/components/Loader";
 
-const AboutProjectComponent = React.lazy(() => import("@/components/paget/ChartsPage/ChartsPage"));
+const ChartsPageComponent = React.lazy(() => import("./ChartsPage"));
 
-export const AboutProject = () => {
+export const ChartsPage = () => {
   return (
     <React.Suspense fallback={<Loader />}>
-      <AboutProjectComponent />
+      <ChartsPageComponent />
     </React.Suspense>
   );
 };
