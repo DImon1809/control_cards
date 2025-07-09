@@ -1,0 +1,48 @@
+.plan__container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 auto;
+
+  .plan__title {
+    text-align: center;
+  }
+
+  .plan {
+    width: 90%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      cursor: zoom-in;
+
+      @media (max-width: 640px) {
+        cursor: default;
+      }
+    }
+  }
+}
+
+.plan__modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  cursor: zoom-out;
+
+  @media (max-width: 640px) {
+    cursor: default;
+  }
+
+  img {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: var(--main-shadow);
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Line } from "react-chartjs-2";
 
 import {
@@ -12,6 +12,10 @@ import {
   Tooltip,
 } from "chart.js";
 
+import { useCheckMobile, useTranslatePoint } from "@/hooks";
+
+import styles from "./style.module.scss";
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const A2 = 0.577;
@@ -19,16 +23,20 @@ const D3 = 0;
 const D4 = 2.114;
 
 type MeasurementData = {
-  [parameter: string]: number[][];
+  [key: string]: number[][];
 };
 
 type Props = {
   data: MeasurementData;
 };
 
-export const XBarRChart: React.FC<Props> = ({ data }) => {
+export const XBarRChart = ({ data }: Props) => {
+  const [isMobile] = useCheckMobile();
+  const { translatePoint } = useTranslatePoint();
+
   const parameterNames = Object.keys(data);
   const [activeParameter, setActiveParameter] = useState(parameterNames[0]);
+  const [fullscreenChart, setFullscreenChart] = useState<"xbar" | "r" | null>(null);
 
   const currentData = data[activeParameter];
 
@@ -46,7 +54,6 @@ export const XBarRChart: React.FC<Props> = ({ data }) => {
 
   const xbarUCL = XBarBar + A2 * RBar;
   const xbarLCL = XBarBar - A2 * RBar;
-
   const rUCL = D4 * RBar;
   const rLCL = D3 * RBar;
 
@@ -55,6 +62,13 @@ export const XBarRChart: React.FC<Props> = ({ data }) => {
   const xbarChartData = {
     labels,
     datasets: [
+      {
+        label: "Центральная линия",
+        data: Array(labels.length).fill(XBarBar),
+        borderColor: "green",
+        borderDash: [5, 5],
+        fill: false,
+      },
       {
         label: "Среднее значение (X̄)",
         data: subgroupMeans,
@@ -105,26 +119,43 @@ export const XBarRChart: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex gap-4 mb-6">
+    <section className={styles.xbar__container}>
+      <div className={styles.xbar__title}>
+        <h2>X̄-R контрольные карты</h2>
+      </div>
+
+      <div className={styles.chipset__wrapper}>
         {parameterNames.map(name => (
-          <button
-            key={name}
-            onClick={() => setActiveParameter(name)}
-            className={`px-4 py-2 rounded ${
-              name === activeParameter ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
-          >
-            {name}
+          <button key={name} className={styles.chipset} onClick={() => setActiveParameter(name)}>
+            {translatePoint(name)}
           </button>
         ))}
       </div>
 
-      <h2 className="text-xl font-bold mb-4">Контрольная карта X̄ — {activeParameter}</h2>
-      <Line data={xbarChartData} />
+      <div className={styles.chart__wrapper} onClick={() => setFullscreenChart("xbar")}>
+        <h3>Контрольная карта X̄ — {translatePoint(activeParameter)}</h3>
+        <Line data={xbarChartData} />
+      </div>
 
-      <h2 className="text-xl font-bold mt-8 mb-4">Контрольная карта R — {activeParameter}</h2>
-      <Line data={rChartData} />
-    </div>
+      <div className={styles.chart__wrapper} onClick={() => setFullscreenChart("r")}>
+        <h3>Контрольная карта R — {translatePoint(activeParameter)}</h3>
+        <Line data={rChartData} />
+      </div>
+
+      {fullscreenChart && isMobile && (
+        <div className={styles.fullscreenOverlay} onClick={() => setFullscreenChart(null)}>
+          <div className={styles.fullscreenChart}>
+            <h3>
+              {fullscreenChart === "xbar" ? "Контрольная карта X̄" : "Контрольная карта R"} —{" "}
+              {translatePoint(activeParameter)}
+            </h3>
+            <Line
+              data={fullscreenChart === "xbar" ? xbarChartData : rChartData}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
+        </div>
+      )}
+    </section>
   );
 };
