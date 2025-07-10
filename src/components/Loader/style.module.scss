@@ -1,9 +1,15 @@
 .loader {
   width: 64px;
   height: 64px;
-  border: 6px dashed black;
+  border: 6px dashed #000000;
   border-radius: 50%;
+  margin: 40px auto;
   animation: 1.6s linear infinite animator;
+
+  @media (max-width: 640px) {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 @keyframes animator {
