@@ -4,7 +4,7 @@ export const useTransformData = () => {
 
     const names: string[] = Object.keys(data);
 
-    if (!names?.length) return [];
+    if (!names?.length || !Object.keys(data)) return [];
 
     for (let i = 0; i < names.length; i++) {
       const name = names[i];

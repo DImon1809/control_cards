@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 import {
@@ -38,26 +38,35 @@ export const XBarRChart = ({ data }: Props) => {
   const [activeParameter, setActiveParameter] = useState(parameterNames[0]);
   const [fullscreenChart, setFullscreenChart] = useState<"xbar" | "r" | null>(null);
 
+  useEffect(() => {
+    if (!parameterNames.includes(activeParameter)) {
+      setActiveParameter(parameterNames[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   const currentData = data[activeParameter];
 
-  const subgroupMeans = currentData.map(group => {
-    const sum = group.reduce((a, b) => a + b, 0);
-    return sum / group.length;
-  });
+  const subgroupMeans =
+    currentData?.map(group => {
+      const sum = group.reduce((a, b) => a + b, 0);
+      return sum / group.length;
+    }) || [];
 
-  const subgroupRanges = currentData.map(group => {
-    return Math.max(...group) - Math.min(...group);
-  });
+  const subgroupRanges =
+    currentData?.map(group => {
+      return Math.max(...group) - Math.min(...group);
+    }) || [];
 
-  const XBarBar = subgroupMeans.reduce((a, b) => a + b, 0) / subgroupMeans.length;
-  const RBar = subgroupRanges.reduce((a, b) => a + b, 0) / subgroupRanges.length;
+  const XBarBar = subgroupMeans?.reduce((a, b) => a + b, 0) / subgroupMeans.length || 0;
+  const RBar = subgroupRanges?.reduce((a, b) => a + b, 0) / subgroupRanges.length || 0;
 
   const xbarUCL = XBarBar + A2 * RBar;
   const xbarLCL = XBarBar - A2 * RBar;
   const rUCL = D4 * RBar;
   const rLCL = D3 * RBar;
 
-  const labels = currentData.map((_, idx) => `Партия ${idx + 1}`);
+  const labels = currentData?.map((_, idx) => `Партия ${idx + 1}`) || [];
 
   const xbarChartData = {
     labels,
@@ -77,14 +86,14 @@ export const XBarRChart = ({ data }: Props) => {
       },
       {
         label: "UCL (X̄)",
-        data: Array(currentData.length).fill(xbarUCL),
+        data: Array(currentData?.length).fill(xbarUCL),
         borderColor: "red",
         borderDash: [5, 5],
         fill: false,
       },
       {
         label: "LCL (X̄)",
-        data: Array(currentData.length).fill(xbarLCL),
+        data: Array(currentData?.length).fill(xbarLCL),
         borderColor: "red",
         borderDash: [5, 5],
         fill: false,
@@ -103,14 +112,14 @@ export const XBarRChart = ({ data }: Props) => {
       },
       {
         label: "UCL (R)",
-        data: Array(currentData.length).fill(rUCL),
+        data: Array(currentData?.length).fill(rUCL),
         borderColor: "red",
         borderDash: [5, 5],
         fill: false,
       },
       {
         label: "LCL (R)",
-        data: Array(currentData.length).fill(rLCL),
+        data: Array(currentData?.length).fill(rLCL),
         borderColor: "red",
         borderDash: [5, 5],
         fill: false,
@@ -125,11 +134,12 @@ export const XBarRChart = ({ data }: Props) => {
       </div>
 
       <div className={styles.chipset__wrapper}>
-        {parameterNames.map(name => (
-          <button key={name} className={styles.chipset} onClick={() => setActiveParameter(name)}>
-            {translatePoint(name)}
-          </button>
-        ))}
+        {parameterNames?.length &&
+          parameterNames.map(name => (
+            <button key={name} className={styles.chipset} onClick={() => setActiveParameter(name)}>
+              {translatePoint(name)}
+            </button>
+          ))}
       </div>
 
       <div className={styles.chart__wrapper} onClick={() => setFullscreenChart("xbar")}>
