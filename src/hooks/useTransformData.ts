@@ -21,8 +21,6 @@ export const useTransformData = () => {
       rows = rows.map((row, key) => [...row, currentData[key]]);
     }
 
-    console.log(rows);
-
     return [names, ...rows];
   };
 
