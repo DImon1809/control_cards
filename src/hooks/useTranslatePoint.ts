@@ -4,6 +4,8 @@ const points = {
   distanceGroove: "Расстояние до паза",
   groove: "Длина паза",
   grooveDepth: "Глубина паза",
+  distanceCenter: "Расстояние до центра",
+  minDiameter: "Диаметр отверстия",
 } as const;
 
 type PointKeys = keyof typeof points;

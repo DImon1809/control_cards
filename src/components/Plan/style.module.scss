@@ -7,12 +7,68 @@
   gap: 14px;
   margin: 0 auto;
 
-  .plan__title {
-    text-align: center;
+  .plan__introduction {
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .plan__direction {
+      position: absolute;
+      top: 0.5px;
+      cursor: pointer;
+      opacity: 1;
+      transition: all 0.3s ease;
+
+      @media (max-width: 640px) {
+        cursor: default;
+      }
+    }
+
+    .plan__left {
+      left: 0;
+
+      @media (hover: hover) {
+        &:hover {
+          transform: translateX(-2px);
+          opacity: 0.5;
+        }
+      }
+
+      &:hover {
+        transform: translateX(-2px);
+        opacity: 0.5;
+      }
+    }
+
+    .plan__right {
+      right: 0;
+
+      @media (hover: hover) {
+        &:hover {
+          transform: translateX(2px);
+          opacity: 0.5;
+        }
+      }
+
+      &:hover {
+        transform: translateX(2px);
+        opacity: 0.5;
+      }
+    }
+
+    .plan__title {
+      text-align: center;
+    }
   }
 
   .plan {
     width: 90%;
+
+    &.pin {
+      width: 70%;
+    }
 
     img {
       width: 100%;
